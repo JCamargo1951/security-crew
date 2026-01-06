@@ -1,20 +1,40 @@
-import App from '@/App.vue'
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/login',
-      name: 'login',
-      component: () => import('../modules/auth/layouts/LoginLayout.vue'),
+      path: '/',
+      name: 'landing',
+      redirect: { name: 'home' },
+      component: () => import('@/modules/landing/layouts/LandingLayout.vue'),
+      children: [
+        {
+          path: '/',
+          name: 'home',
+          component: () => import('@/modules/landing/views/Home.vue'),
+        },
+      ],
     },
     {
-      path: '/landing',
-      name: 'landing',
-      component: () => import('../modules/landing/layouts/LandingLayout.vue'),
+      path: '/auth',
+      name: 'auth',
+      redirect: { name: 'login' },
+      component: () => import('../modules/auth/layouts/AuthLayout.vue'),
+      children: [
+        {
+          path: '/login',
+          name: 'login',
+          component: () => import('../modules/auth/views/Login.vue'),
+        },
+        {
+          path: '/register',
+          name: 'register',
+          component: () => import('../modules/auth/views/Register.vue'),
+        },
+      ],
     },
   ],
-})
+});
 
-export default router
+export default router;
