@@ -1,4 +1,4 @@
-import NotFound404 from '@/common/views/NotFound404.vue';
+import NotFound404 from '@/modules/common/views/NotFound404.vue';
 import { createRouter, createWebHistory } from 'vue-router'
 
 const router = createRouter({
@@ -8,12 +8,12 @@ const router = createRouter({
       path: '/',
       name: 'landing',
       redirect: { name: 'home' },
-      component: () => import('@/modules/landing/layouts/LandingLayout.vue'),
+      component: () => import('@/modules/common/layouts/LandingLayout.vue'),
       children: [
         {
           path: '/',
           name: 'home',
-          component: () => import('@/modules/landing/views/Home.vue'),
+          component: () => import('@/modules/common/views/Home.vue'),
         },
       ],
     },
