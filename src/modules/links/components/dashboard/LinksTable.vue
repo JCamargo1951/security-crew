@@ -8,7 +8,7 @@
               <LinksHeader></LinksHeader>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-              <LinksRow></LinksRow>
+              <LinksRow v-for="link in links" :link :key="link.id"></LinksRow>
             </tbody>
           </table>
         </div>
@@ -18,6 +18,14 @@
 </template>
 
 <script setup lang="ts">
+import type { Link } from '../../interfaces';
 import LinksHeader from './LinksHeader.vue';
 import LinksRow from './LinksRow.vue';
+
+interface Props {
+  links: Link[];
+};
+
+defineProps<Props>();
+
 </script>
