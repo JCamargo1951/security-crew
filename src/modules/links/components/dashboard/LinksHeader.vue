@@ -6,8 +6,7 @@
     <button
       class="flex items-center gap-x-3 focus:outline-none"
       :class="{ ' cursor-pointer': header.sortable }"
-      @click="$emit('onFilterChange', header.key)"
-    >
+      @click="header.sortable && emit('onFilterChange', header.key)">
       <span>{{ header.title }}</span>
       <SorterIcon v-if="header.sortable" />
     </button>
@@ -16,9 +15,14 @@
 
 <script setup lang="ts">
 import SorterIcon from '@/modules/common/icons/SorterIcon.vue';
-defineProps<{ header: { title: string; sortable: boolean, key: string } }>();
+import type { SortableLinkKey } from '../../types/sorteable-link-key.type';
+import type { NonSortableHeader, SortableHeader } from '../../interfaces';
+
+type Header = SortableHeader | NonSortableHeader;
+
+defineProps<{ header:  Header}>();
 
 const emit = defineEmits<{
-  (e: 'onFilterChange', key: string): void;
+  (e: 'onFilterChange', key: SortableLinkKey): void;
 }>();
 </script>

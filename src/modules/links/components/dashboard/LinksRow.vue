@@ -26,7 +26,7 @@
     </td>
     <td class="px-12 py-4 text-sm font-medium whitespace-nowrap">
       <div class="inline px-3 py-1 font-normal">
-        {{ link.visibility === 'Publico' ? 'Si' : 'No' }}
+        {{ link.password ? 'Si' : 'No' }}
       </div>
     </td>
     <td class="px-4 py-4 text-sm whitespace-nowrap">
@@ -53,4 +53,5 @@ interface Props {
 }
 
 defineProps<Props>();
+
 </script>

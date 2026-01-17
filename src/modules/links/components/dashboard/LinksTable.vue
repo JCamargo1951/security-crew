@@ -5,10 +5,15 @@
         <div class="overflow-hidden border border-gray-200 dark:border-gray-700 md:rounded-lg">
           <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead class="bg-gray-50 dark:bg-gray-800">
-              <LinksHeader v-for="header in headers" :header @on-filter-change="onFilterChange($event)"></LinksHeader>
+              <LinksHeader
+                v-for="header in headers"
+                :header
+                @on-filter-change="onFilterChange"
+                :key="header.title"
+              ></LinksHeader>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900">
-              <LinksRow v-for="link in links" :link :key="link.id"></LinksRow>
+              <LinksRow v-for="link in sortedLinks" :link :key="link.id"></LinksRow>
             </tbody>
           </table>
         </div>
@@ -18,27 +23,50 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import type { Link } from '../../interfaces';
+import { computed, ref } from 'vue';
+import type { Link, NonSortableHeader, SortableHeader } from '../../interfaces';
 import LinksHeader from './LinksHeader.vue';
 import LinksRow from './LinksRow.vue';
+import type { SortableLinkKey } from '../../types/sorteable-link-key.type';
+
+type Header = SortableHeader | NonSortableHeader;
 
 interface Props {
   links: Link[];
 }
 
 const props = defineProps<Props>();
-const headers = [
+
+const headers: Header[] = [
   { title: 'Nombre', sortable: true, key: 'title' },
   { title: 'Visibilidad', sortable: true, key: 'visibility' },
-  { title: 'Contraseña', sortable: false, key: 'password' },
+  { title: 'Contraseña', sortable: false },
   { title: 'Link', sortable: true, key: 'shortener_url' },
-  { title: '', sortable: false, key: '' },
+  { title: '', sortable: false },
 ];
 
-const links = ref<Link[]>(props.links);
 
-function onFilterChange(key: string){
-  links.value.sort((a, b) => a[key].localeCompare(b[key]));
+const links = ref<Link[]>(props.links);
+const sortKey = ref<SortableLinkKey>('title');
+const sortDirection = ref<'asc' | 'desc'>('asc');
+
+function onFilterChange(key: SortableLinkKey) {
+  if (sortKey.value === key) {
+    sortDirection.value = sortDirection.value === 'asc' ? 'desc' : 'asc';
+  } else {
+    sortKey.value = key;
+    sortDirection.value = 'asc';
+  }
 }
+
+const sortedLinks = computed<Link[]>(() => {
+  return [...links.value].sort((a, b) => {
+    const aValue = a[sortKey.value];
+    const bValue = b[sortKey.value];
+
+    const result = aValue.localeCompare(bValue);
+
+    return sortDirection.value === 'asc' ? result : -result;
+  });
+});
 </script>

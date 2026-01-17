@@ -2,7 +2,7 @@
   <section class="container px-4 mx-auto m-15">
     <LinksHeader></LinksHeader>
     <LinksFilters></LinksFilters>
-    <LinksTable :links="filtersLinks"></LinksTable>
+    <LinksTable :links="filteredLinks"></LinksTable>
     <LinksPagination></LinksPagination>
   </section>
 </template>
@@ -15,23 +15,19 @@ import LinksPagination from '../components/dashboard/LinksPagination.vue';
 import type { Link } from '../interfaces';
 import { computed, ref } from 'vue';
 
-const filterBy = ref('all');
+type FilterKey = 'all' | 'public' | 'private';
 
-const filtersLinks = computed(() => {
-  if(!filterBy.value.trim()) return null;
-  
-  if(filterBy.value === 'private' || filterBy.value === 'public' || filterBy.value === 'all'){
-    return filters[filterBy.value]();
-  }
+const filterBy = ref<FilterKey>('all');
 
-  return null;
-})
-
-const filters = {
-  'all': () => links.value,
-  'public': () => links.value.filter(link => link.visibility === 'Publico' ),
-  'private': () => links.value.filter(link => link.visibility === 'Privado' ),
+const filters: Record<FilterKey, () => Link[]> = {
+  all: () => links.value,
+  public: () => links.value.filter(link => link.visibility === 'Publico'),
+  private: () => links.value.filter(link => link.visibility === 'Privado'),
 };
+
+const filteredLinks = computed(() => {
+  return filters[filterBy.value]();
+});
 
 const links = ref<Link[]>([
   {
